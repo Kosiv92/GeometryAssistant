@@ -64,8 +64,9 @@ namespace GeometryAssistant.Figures
                 && secondSideLength == thirdSideLength;
 
             IsRight = (Math.Pow(firstSideLength, 2) == Math.Pow(secondSideLength, 2) + Math.Pow(thirdSideLength, 2))
-                || (Math.Pow(secondSideLength, 2) == Math.Pow(firstSideLength, 2) + Math.Pow(thirdSideLength, 2))
-                || (Math.Pow(thirdSideLength, 2) == Math.Pow(firstSideLength, 2) + Math.Pow(secondSideLength, 2));
+            || (Math.Pow(secondSideLength, 2) == Math.Pow(firstSideLength, 2) + Math.Pow(thirdSideLength, 2))
+            || (Math.Pow(thirdSideLength, 2) == Math.Pow(firstSideLength, 2) + Math.Pow(secondSideLength, 2));
+
         }
 
         /// <summary>
@@ -84,9 +85,7 @@ namespace GeometryAssistant.Figures
             IsEquilateral = longSideLength == shortSideLength ? true : false;
 
             IsRight = IsEquilateral ? false :
-                Math.Pow(longSideLength, 2) == 2 * Math.Pow(shortSideLength, 2) ? true : false;
-
-
+                Math.Pow(longSideLength, 2) == 2.0 * Math.Pow(shortSideLength, 2) ? true : false;
         }
 
         /// <summary>
@@ -106,7 +105,13 @@ namespace GeometryAssistant.Figures
 
         public double GetAreaValue()
         {
-            throw new NotImplementedException();
+            if (IsRight)
+            {
+                double sides = { FirstSideLength, SecondSideLength, ThirdSideLength };
+                double maxSide = sides.Max();
+                double[] catets = sides.Where(sides => s != maxSide);
+                return (Math.Pow(catets[0], 2) * Math.Pow(catets[1], 2)) / 2.0;
+            }
         }
 
         public double GetPerimetrValue()
