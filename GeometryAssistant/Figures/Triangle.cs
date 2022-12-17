@@ -103,21 +103,50 @@ namespace GeometryAssistant.Figures
 
         #region Methods
 
+        /// <summary>
+        /// Calculate area of triangle instance
+        /// </summary>
+        /// <returns>Area value</returns>
         public double GetAreaValue()
         {
-            if (IsRight)
-            {
-                double sides = { FirstSideLength, SecondSideLength, ThirdSideLength };
-                double maxSide = sides.Max();
-                double[] catets = sides.Where(sides => s != maxSide);
-                return (Math.Pow(catets[0], 2) * Math.Pow(catets[1], 2)) / 2.0;
-            }
+            if (IsEquilateral) return (Math.Pow(FirstSideLength, 2) * Math.Sqrt(3)) / 4.0;
+
+            if (IsRight) return GetRightTriangleArea();
+
+            if (IsIsosceles) return GetIsoscelesTriangleArea();
+
+            double halfPerimeter = GetPerimetrValue() / 2.0;
+
+            return Math.Sqrt(halfPerimeter * (halfPerimeter - FirstSideLength)
+                * (halfPerimeter - SecondSideLength)
+                * (halfPerimeter - ThirdSideLength));
         }
 
         public double GetPerimetrValue()
         {
-            throw new NotImplementedException();
+            return FirstSideLength + SecondSideLength + ThirdSideLength;
         }
+
+        private double GetRightTriangleArea()
+        {
+            double[] sides = { FirstSideLength, SecondSideLength, ThirdSideLength };
+            double hippotenuse = sides.Max();
+            double[] catets = sides.Where(side => side != hippotenuse).ToArray();
+            return (Math.Pow(catets[0], 2) * Math.Pow(catets[1], 2)) / 2.0;
+        }
+
+        private double GetEquilateralTriangleArea()
+            => (Math.Pow(FirstSideLength, 2) * Math.Sqrt(3)) / 4.0;
+        
+        private double GetIsoscelesTriangleArea()
+        {
+            double[] sides = { FirstSideLength, SecondSideLength, ThirdSideLength };
+            double longSide = sides.Max();
+            double shortSide = sides.Where(side => side != longSide).FirstOrDefault();
+            return (longSide * (Math.Pow(longSide / 2.0, 2) + Math.Pow(shortSide, 2))) / 2.0;
+        }
+
+
         #endregion
     }
 }
