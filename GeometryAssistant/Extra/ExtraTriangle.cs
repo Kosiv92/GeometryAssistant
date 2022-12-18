@@ -118,14 +118,14 @@ namespace GeometryAssistant.Extra
 
             if (IsIsosceles) return GetIsoscelesTriangleArea();
 
-            double halfPerimeter = GetPerimetrValue() / 2.0;
+            double halfPerimeter = GetPerimeterValue() / 2.0;
 
             return Math.Sqrt(halfPerimeter * (halfPerimeter - FirstSideLength)
                 * (halfPerimeter - SecondSideLength)
                 * (halfPerimeter - ThirdSideLength));
         }
 
-        public double GetPerimetrValue()
+        public double GetPerimeterValue()
         {
             return FirstSideLength + SecondSideLength + ThirdSideLength;
         }

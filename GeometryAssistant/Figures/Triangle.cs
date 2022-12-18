@@ -65,7 +65,7 @@ namespace GeometryAssistant.Figures
 
             SecondSideLength = ThirdSideLength = shortSideLength;                        
 
-            IsRight = Math.Pow(longSideLength, 2) == 2.0 * Math.Pow(shortSideLength, 2) ? true : false;
+            IsRight = Math.Pow(longSideLength, 2) == 2.0 * Math.Pow(shortSideLength, 2);
         }
 
         /// <summary>
@@ -90,18 +90,26 @@ namespace GeometryAssistant.Figures
         {
             if (IsRight) return GetRightTriangleArea();                        
 
-            double halfPerimeter = GetPerimetrValue() / 2.0;
+            double halfPerimeter = GetPerimeterValue() / 2.0;
 
             return Math.Sqrt(halfPerimeter * (halfPerimeter - FirstSideLength)
                 * (halfPerimeter - SecondSideLength)
                 * (halfPerimeter - ThirdSideLength));
         }
 
-        public double GetPerimetrValue()
+        /// <summary>
+        /// Get value of triangle perimetr
+        /// </summary>
+        /// <returns></returns>
+        public double GetPerimeterValue()
         {
             return FirstSideLength + SecondSideLength + ThirdSideLength;
         }
 
+        /// <summary>
+        /// Get value of triangle area
+        /// </summary>
+        /// <returns></returns>
         private double GetRightTriangleArea()
         {
             double[] sides = { FirstSideLength, SecondSideLength, ThirdSideLength };

@@ -10,6 +10,6 @@ namespace GeometryAssistant.Interfaces
     {
         public double GetAreaValue();
 
-        public double GetPerimetrValue();
+        public double GetPerimeterValue();
     }
 }
