@@ -5,9 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GeometryAssistant.Figures
+namespace GeometryAssistant.Extra
 {
-    public record struct Triangle : IGeometricFigure
+    /// <summary>
+    /// Triangle with properties that show if it isosceles or equilateral
+    /// </summary>
+    public record struct ExtraTriangle : IGeometricFigure
     {
         #region Properties
         /// <summary>
@@ -24,7 +27,17 @@ namespace GeometryAssistant.Figures
         /// Third side length of triangle
         /// </summary>
         public double ThirdSideLength { get; init; }
-                
+
+        /// <summary>
+        /// Triangle is isosceles
+        /// </summary>
+        public bool IsIsosceles { get; init; }
+
+        /// <summary>
+        /// Triangle is isosceles
+        /// </summary>
+        public bool IsEquilateral { get; init; }
+
         /// <summary>
         /// Triangle is right
         /// </summary>
@@ -40,11 +53,18 @@ namespace GeometryAssistant.Figures
         /// <param name="firstSideLength">First side length of triangle</param>
         /// <param name="secondSideLength">Second side length of triangle</param>
         /// <param name="thirdSideLength">Third side length of triangle</param>
-        public Triangle(double firstSideLength, double secondSideLength, double thirdSideLength)
+        public ExtraTriangle(double firstSideLength, double secondSideLength, double thirdSideLength)
         {
             FirstSideLength = firstSideLength;
             SecondSideLength = secondSideLength;
-            ThirdSideLength = thirdSideLength;                        
+            ThirdSideLength = thirdSideLength;
+
+            IsIsosceles = firstSideLength == secondSideLength
+                || firstSideLength == thirdSideLength
+                || secondSideLength == thirdSideLength;
+
+            IsEquilateral = firstSideLength == secondSideLength
+                && secondSideLength == thirdSideLength;
 
             IsRight = (Math.Pow(firstSideLength, 2) == Math.Pow(secondSideLength, 2) + Math.Pow(thirdSideLength, 2))
             || (Math.Pow(secondSideLength, 2) == Math.Pow(firstSideLength, 2) + Math.Pow(thirdSideLength, 2))
@@ -57,24 +77,28 @@ namespace GeometryAssistant.Figures
         /// </summary>
         /// <param name="longSideLength">Long side length of isosceles triangle</param>
         /// <param name="shortSideLength">Short sides length of isosceles triangle</param>
-        public Triangle(double longSideLength, double shortSideLength)
+        public ExtraTriangle(double longSideLength, double shortSideLength)
         {
-            if(longSideLength <= shortSideLength) throw new Exception("Long side of isosceles triangle can't be less than or equal to short side");
-            
             FirstSideLength = longSideLength;
 
-            SecondSideLength = ThirdSideLength = shortSideLength;                        
+            SecondSideLength = ThirdSideLength = shortSideLength;
 
-            IsRight = Math.Pow(longSideLength, 2) == 2.0 * Math.Pow(shortSideLength, 2) ? true : false;
+            IsIsosceles = true;
+
+            IsEquilateral = longSideLength == shortSideLength ? true : false;
+
+            IsRight = IsEquilateral ? false :
+                Math.Pow(longSideLength, 2) == 2.0 * Math.Pow(shortSideLength, 2) ? true : false;
         }
 
         /// <summary>
         /// Constructor of equilateral triangle
         /// </summary>
         /// <param name="sideLength">Sides length of equilateral triangle</param>
-        public Triangle(double sideLength)
+        public ExtraTriangle(double sideLength)
         {
-            FirstSideLength = SecondSideLength = ThirdSideLength = sideLength;            
+            FirstSideLength = SecondSideLength = ThirdSideLength = sideLength;
+            IsEquilateral = IsIsosceles = true;
             IsRight = false;
         }
 
@@ -88,7 +112,11 @@ namespace GeometryAssistant.Figures
         /// <returns>Area value</returns>
         public double GetAreaValue()
         {
-            if (IsRight) return GetRightTriangleArea();                        
+            if (IsEquilateral) return (Math.Pow(FirstSideLength, 2) * Math.Sqrt(3)) / 4.0;
+
+            if (IsRight) return GetRightTriangleArea();
+
+            if (IsIsosceles) return GetIsoscelesTriangleArea();
 
             double halfPerimeter = GetPerimetrValue() / 2.0;
 
@@ -108,7 +136,19 @@ namespace GeometryAssistant.Figures
             double hippotenuse = sides.Max();
             double[] catets = sides.Where(side => side != hippotenuse).ToArray();
             return (Math.Pow(catets[0], 2) * Math.Pow(catets[1], 2)) / 2.0;
-        }                
+        }
+
+        private double GetEquilateralTriangleArea()
+            => (Math.Pow(FirstSideLength, 2) * Math.Sqrt(3)) / 4.0;
+        
+        private double GetIsoscelesTriangleArea()
+        {
+            double[] sides = { FirstSideLength, SecondSideLength, ThirdSideLength };
+            double longSide = sides.Max();
+            double shortSide = sides.Where(side => side != longSide).FirstOrDefault();
+            return (longSide * (Math.Pow(longSide / 2.0, 2) + Math.Pow(shortSide, 2))) / 2.0;
+        }
+
 
         #endregion
     }
